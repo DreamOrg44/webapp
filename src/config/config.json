@@ -1,0 +1,15 @@
+{
+  "development": {
+    "username": "rushikesh",
+    "password": 1333189,
+    "database": "health_check_db",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  },
+  "test": {
+    
+  },
+  "production": {
+    
+  }
+}
