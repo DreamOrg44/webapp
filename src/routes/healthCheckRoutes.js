@@ -3,9 +3,9 @@ const express = require('express');
 const router = express.Router();
 // const statusCheck = require('../models/statusCheck');
 const { Sequelize, DataTypes } = require('sequelize');
-const dbConfig = require('../dbConfig');
-
-const sequelize = new Sequelize(dbConfig.database);
+//const dbConfig = require('../config/dbConfig');
+const sequelize = require('../config/sequelize');
+// const sequelize = new Sequelize(dbConfig.database);
 // const HealthCheck = statusCheck(sequelize, DataTypes);
 const healthCheckController = require('../controller/healthCheckController');
 
