@@ -1,5 +1,5 @@
 # webapp
-CSYE 6225 Spring 2024 Course
+#CSYE 6225 Spring 2024 Course
 
 ### Prerequisites
 Before you start, ensure that you have the following tools and dependencies installed on your machine:
