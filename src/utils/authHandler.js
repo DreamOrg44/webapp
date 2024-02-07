@@ -6,17 +6,21 @@
 //     // User is not authenticated
 //     res.status(401).json({ message: 'Authentication required.' });
 // };
+const CustomError = require('./errorHandler')
+
 
 const bcrypt = require('bcrypt');
-const User  = require('../models/userModel'); // Adjust the path based on your project structure
+const User = require('../models/userModel'); // Adjust the path based on your project structure
 
 async function authHandler(req, res, next) {
     const authHeader = req.headers.authorization;
-    console.log("Auth details", authHeader);
+    console.log("Auth details received are", authHeader);
     if (!authHeader) {
-        let err = new Error('You are not authenticated!');
+        console.log("Came in authHeader check");
+        let err = new CustomError('You are not authenticated!', 401);
         res.setHeader('WWW-Authenticate', 'Basic');
-        err.status = 401;
+        // err.status = 401;
+        // return next(err);
         return next(err);
     }
 
@@ -45,18 +49,19 @@ async function authHandler(req, res, next) {
         const user = await User.findOne({ where: { email } });
 
         if (user && await bcrypt.compare(password, user.password)) {
-            req.user = user; // Attach user information to the request for later use
+            req.user = user;
             next();
         } else {
-            let err = new Error('You are not authenticated!');
+            console.log("Came in password failure check");
+            let err = new CustomError('You are not authenticated!', 401);
+            console.log("Created customError instance", err);
             res.setHeader('WWW-Authenticate', 'Basic');
-            err.status = 401;
             return next(err);
         }
     } catch (error) {
-        console.error('Database query error:', error);
-        let err = new Error('Internal Server Error');
-        err.status = 500;
+        console.error('Database query error in catch block:', error);
+        let err = new CustomError('Unable to process the request currently', 422);
+        // err.status = 400;
         return next(err);
     }
 }
