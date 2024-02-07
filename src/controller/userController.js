@@ -30,10 +30,14 @@ async function updateUser(req, res) {
       return res.status(400).json({ error: 'Invalid fields provided for update' });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    let updateFields = { firstName, lastName, account_updated: new Date() };
 
-    const updatedUser = await User.update(
-      { firstName, lastName, password: hashedPassword, account_updated: new Date() },
+    if (password) {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      updateFields.password = hashedPassword;
+    }
+
+    const updatedUser = await User.update(updateFields,
       { where: { id: req.user.id } } 
     );
 
