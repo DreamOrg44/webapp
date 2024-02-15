@@ -1,42 +1,42 @@
-# name: Integration Tests
+name: Integration Tests
 
-# on:
-#   pull_request:
-#     branches:
-#       - main
+on:
+  pull_request:
+    branches:
+      - main
 
-# jobs:
-#   integration-tests:
-#     runs-on: ubuntu-latest
+jobs:
+  integration-tests:
+    runs-on: ubuntu-latest
 
-#     services:
-#       postgres:
-#         image: postgres:latest
-#         env:
-#           POSTGRES_DB: ${{ secrets.DB_NAME }}
-#           POSTGRES_USER: ${{ secrets.DB_USER }}
-#           POSTGRES_PASSWORD: ${{ secrets.DB_PASSWORD }}
-#         ports:
-#           - 5432:5432
-#         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_DB: ${{ secrets.DB_NAME }}
+          POSTGRES_USER: ${{ secrets.DB_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.DB_PASSWORD }}
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
-#     steps:
-#       - name: Checkout code
-#         uses: actions/checkout@v2
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-#       - name: Set up Node.js
-#         uses: actions/setup-node@v2
-#         with:
-#           node-version: '14'
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
 
-#       - name: Install dependencies
-#         run: npm install
+      - name: Install dependencies
+        run: npm install
 
-#       - name: Set up PostgreSQL
-#         run: |
-#           echo "Waiting for PostgreSQL to start..."
-#           sleep 10
+      - name: Set up PostgreSQL
+        run: |
+          echo "Waiting for PostgreSQL to start..."
+          sleep 10
 
-#       - name: Run integration tests
-#         run: npm test
+      - name: Run integration tests
+        run: npm test
 
