@@ -2,7 +2,7 @@
 
 const express = require('express');
 const router = express.Router();
-const userController = require('../controller/UserController');
+const userController = require('../controller/userController');
 const authHandler = require('../utils/authHandler');
 
 // User Operations
