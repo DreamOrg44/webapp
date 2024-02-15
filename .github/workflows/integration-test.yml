@@ -11,7 +11,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres:latest
+        image: postgres:14.10
         env:
           POSTGRES_DB: ${{ secrets.DB_NAME }}
           POSTGRES_USER: ${{ secrets.DB_USER }}
@@ -27,7 +27,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: "14" # Adjust to your preferred Node.js version
+          node-version: 18
 
       - name: Install dependencies
         run: npm install
