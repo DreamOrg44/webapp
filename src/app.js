@@ -2,11 +2,20 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const healthCheckRoutes = require('./routes/healthCheckRoutes');
 const userRoutes = require('./routes/userRoutes');
-const CustomError = require('./utils/errorHandler')
+const CustomError = require('./utils/errorHandler');
+const sequelize = require('./config/sequelize');
 
 const app = express();
-
+const bootstrapDatabase = async () => {
+    try {
+        await sequelize.sync({ alter: true });
+        console.log("database synchronization completed successfully");
+    } catch (error) {
+        console.error("database synchronization failed", error);
+    }
+}
 app.use(bodyParser.json());
+bootstrapDatabase();
 app.use(healthCheckRoutes);
 app.use(userRoutes);
 

@@ -1,11 +1,12 @@
 const request = require('supertest');
 const app = require('../app');
 
-const username = 'test12345@example.com';
+const username = 'test1234@example.com';
 const password = 'password123';
 
 
 describe('Health Check API', () => {
+    beforeEach(async () => await new Promise((resolve) => setTimeout(resolve, 2000)))
     test('should return HTTP 200 for a legitimate GET request and should never fail', async () => {
         const res = await request(app).get('/healthz');
         expect(res.status).toBe(200);
@@ -68,7 +69,7 @@ describe('Health Check API', () => {
     });
     test('Create an Account', async () => {
         const response = await request(app).post('/v1/user').send({
-            email: 'test12345@example.com',
+            email: 'test1234@example.com',
             password: 'password123',
             firstName: 'John',
             lastName: 'Doe',
@@ -81,9 +82,9 @@ describe('Health Check API', () => {
     // Test Case 2: Get User Details
     test('Get User Details', async () => {
         const response = await request(app).get('/v1/user/self')
-        .set('Authorization', `Basic ${Buffer.from(`${username}:${password}`).toString('base64')}`);
+            .set('Authorization', `Basic ${Buffer.from(`${username}:${password}`).toString('base64')}`);
         expect(response.status).toBe(200);
-        expect(response.body).toHaveProperty('email', 'test12345@example.com');
+        expect(response.body).toHaveProperty('email', 'test1234@example.com');
     });
 
     // test('Update User Account', async () => {
@@ -104,20 +105,20 @@ describe('Health Check API', () => {
             .send({
                 firstName: 'UpdatedJohn',
             });
-    
+
         // Check if the PUT request was successful (Status Code 204)
         expect(updateResponse.status).toBe(204);
-    
+
         // Make a GET request to retrieve the updated user information
         const getResponse = await request(app)
             .get('/v1/user/self')
             .set('Authorization', `Basic ${Buffer.from(`${username}:${password}`).toString('base64')}`);
-    
+
         // Check if the GET request was successful (Status Code 200)
         expect(getResponse.status).toBe(200);
-    
+
         // Check if the property is updated in the response body
         expect(getResponse.body).toHaveProperty('firstName', 'UpdatedJohn');
     });
-    
+
 });
