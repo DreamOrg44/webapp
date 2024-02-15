@@ -4,7 +4,7 @@
   "description": "CSYE 6225 web application",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Hello World \"",
+    "test": "jest",
     "start": "node index.js"
   },
   "repository": {
