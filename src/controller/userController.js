@@ -42,7 +42,7 @@ async function updateUser(req, res) {
     );
 
     if (updatedUser[0] === 1) {
-      res.status(200).json({ message: 'User information updated successfully' });
+      res.status(204).json({ message: 'User information updated successfully' });
     } else {
       res.status(400).json({ error: 'User not found or invalid fields provided for update' });
     }
