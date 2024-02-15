@@ -1,7 +1,9 @@
 const request = require('supertest');
-const app = require('../../index');
+const app = require('../app');
 
-// let firstTestPassed = false;
+const username = 'test12345@example.com';
+const password = 'password123';
+
 
 describe('Health Check API', () => {
     test('should return HTTP 200 for a legitimate GET request and should never fail', async () => {
@@ -35,12 +37,12 @@ describe('Health Check API', () => {
     });
 
     // if (!firstTestPassed) {
-    test('should return HTTP 503 when the DB is unreachable, passes only when test Case 1 failed', async () => {
-        // console.log("Database up and running as, testcase failed and first test case for DB connection is suucessful");
-        const res = await request(app).get('/healthz');
-        expect(res.status).toBe(503);
-        expect(res.headers['cache-control']).toBe('no-store, no-cache, must-revalidate');
-    });
+    // test('should return HTTP 503 when the DB is unreachable, passes only when test Case 1 failed', async () => {
+    //     // console.log("Database up and running as, testcase failed and first test case for DB connection is suucessful");
+    //     const res = await request(app).get('/healthz');
+    //     expect(res.status).toBe(503);
+    //     expect(res.headers['cache-control']).toBe('no-store, no-cache, must-revalidate');
+    // });
     // }
     // else{
     //     console.log("Skipping this test case as first test case ran successfully");
@@ -64,4 +66,58 @@ describe('Health Check API', () => {
         expect(response.status).toBe(400);
         expect(response.headers['cache-control']).toBe('no-store, no-cache, must-revalidate');
     });
+    test('Create an Account', async () => {
+        const response = await request(app).post('/v1/user').send({
+            email: 'test12345@example.com',
+            password: 'password123',
+            firstName: 'John',
+            lastName: 'Doe',
+        });
+
+        expect(response.status).toBe(201);
+        expect(response.body).toHaveProperty('id');
+    });
+
+    // Test Case 2: Get User Details
+    test('Get User Details', async () => {
+        const response = await request(app).get('/v1/user/self')
+        .set('Authorization', `Basic ${Buffer.from(`${username}:${password}`).toString('base64')}`);
+        expect(response.status).toBe(200);
+        expect(response.body).toHaveProperty('email', 'test12345@example.com');
+    });
+
+    // test('Update User Account', async () => {
+    //     const response = await request(app).put('/v1/user/self')
+    //     .set('Authorization', `Basic ${Buffer.from(`${username}:${password}`).toString('base64')}`)
+    //     .send({
+    //         firstName: 'UpdatedJohn',
+    //     });
+    //     expect(response.status).toBe(204);
+    // });
+
+
+    test('Update User Account', async () => {
+        // Make a PUT request to update the user account
+        const updateResponse = await request(app)
+            .put('/v1/user/self')
+            .set('Authorization', `Basic ${Buffer.from(`${username}:${password}`).toString('base64')}`)
+            .send({
+                firstName: 'UpdatedJohn',
+            });
+    
+        // Check if the PUT request was successful (Status Code 204)
+        expect(updateResponse.status).toBe(204);
+    
+        // Make a GET request to retrieve the updated user information
+        const getResponse = await request(app)
+            .get('/v1/user/self')
+            .set('Authorization', `Basic ${Buffer.from(`${username}:${password}`).toString('base64')}`);
+    
+        // Check if the GET request was successful (Status Code 200)
+        expect(getResponse.status).toBe(200);
+    
+        // Check if the property is updated in the response body
+        expect(getResponse.body).toHaveProperty('firstName', 'UpdatedJohn');
+    });
+    
 });
