@@ -1,7 +1,7 @@
 # webapp
 #CSYE 6225 Spring 2024 Course
 
-### Prerequisites
+### Prerequisites ###
 Before you start, ensure that you have the following tools and dependencies installed on your machine:
 
 - Node.js (https://nodejs.org/) - JavaScript runtime - 19
