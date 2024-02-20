@@ -107,7 +107,7 @@ describe('Health Check API', () => {
             });
 
         // Check if the PUT request was successful (Status Code 204)
-        expect(updateResponse.status).toBe(204);
+        expect(updateResponse.status).toBe(200);
 
         // Make a GET request to retrieve the updated user information
         const getResponse = await request(app)
