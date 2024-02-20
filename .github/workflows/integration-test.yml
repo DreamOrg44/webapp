@@ -23,11 +23,20 @@ jobs:
       - name: Set up PostgreSQL
         run: |
           sudo systemctl start postgresql.service
+                    # Retry loop to wait for PostgreSQL to start
+          until sudo -u postgres psql -c "SELECT 1" &> /dev/null; do
+            echo "Waiting for PostgreSQL to start..."
+            sleep 2
+          done
+
+          # Alter the password for the postgres user
           sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD 'abcdef';"
+
+          # Create a database
           sudo -u postgres createdb health_check_db
+
+          # List existing databases
           sudo -u postgres psql -c "SELECT datname FROM pg_database;"
-          echo "Waiting for PostgreSQL to start..."
-          sleep 10
 
       - name: Run integration tests
         run: npm test
