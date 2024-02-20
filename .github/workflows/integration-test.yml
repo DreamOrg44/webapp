@@ -9,18 +9,6 @@ jobs:
   integration-tests:
     runs-on: ubuntu-latest
 
-    services:
-      postgres:
-        image: postgres:14.10
-        env:
-          POSTGRES_DB: ${{ secrets.DB_NAME }}
-          POSTGRES_USER: ${{ secrets.DB_USER }}
-          POSTGRES_PASSWORD: ${{ secrets.DB_PASSWORD }}
-        ports:
-          - 5432:5432
-        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
-
-    steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
@@ -34,6 +22,9 @@ jobs:
 
       - name: Set up PostgreSQL
         run: |
+          sudo systemctl start postgresql.service
+          sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD ${{ secrets.DB_PASSWORD }};"
+          sudo -u postgres createdb health_check_db
           echo "Waiting for PostgreSQL to start..."
           sleep 10
 
