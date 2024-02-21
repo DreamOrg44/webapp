@@ -54,3 +54,9 @@ Before you start, ensure that you have the following tools and dependencies inst
   ```bash
   npm run lint
   ``` -->
+
+
+Assignment 4:
+
+1) first created a service account and granted the roles as needed and given in assignment description.
+2) 
