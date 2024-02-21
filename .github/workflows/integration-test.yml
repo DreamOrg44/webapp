@@ -22,9 +22,14 @@ jobs:
 
       - name: Set up PostgreSQL
         run: |
-          sudo systemctl start postgresql.service
+          sudo yum update
+          sudo yum install -y gcc-c++ make
+          sudo yum install https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm
+          sudo dnf install postgresql-server postgresql-contrib
+          sudo PGSETUP_INITDB_OPTIONS=" --auth=trust" postgresql-setup --initdb --unit postgresql –debug
+          sudo systemctl start postgresql
           sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD 'root';"
-          sudo -u postgres psql -c  "CREATE DATABASE health_check_db;"
+          sudo -u postgres psql -c "CREATE DATABASE health_check_db;"
 
       - name: Run integration tests
         run: npm test
