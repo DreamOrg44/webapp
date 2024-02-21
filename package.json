@@ -6,7 +6,9 @@
   "scripts": {
     "test": "jest",
     "hello": "echo \"Hello World\"",
-    "start": "node index.js"
+    "start": "node index.js",
+    "package": "zip -r my-app.zip ./",
+    "build": "npm install && npm run package"
   },
   "repository": {
     "type": "git",

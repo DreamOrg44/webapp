@@ -1,0 +1,39 @@
+name: Build, Test, and Package
+
+on:
+  pull_request:
+    types:
+      - closed
+
+jobs:
+  build-test-package:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run integration tests
+        run: npm test
+
+      - name: Build and Package
+        run: npm run build
+
+      - name: Archive artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: my-app-artifact
+          path: my-app.zip
+
+      - name: Execute Custom Machine Image Setup
+        run: |
+          chmod +x setup.sh
+          ./setup.sh    
