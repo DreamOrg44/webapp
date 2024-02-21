@@ -22,7 +22,7 @@ jobs:
         run: npm install
 
       - name: Run integration tests
-        run: npm test
+        uses: ./integration-tests.yml # Reference the integration-tests job
 
       - name: Build and Package
         run: npm run build
@@ -36,4 +36,4 @@ jobs:
       - name: Execute Custom Machine Image Setup
         run: |
           chmod +x setup.sh
-          ./setup.sh    
+          ./setup.sh
