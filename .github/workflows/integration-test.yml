@@ -23,8 +23,8 @@ jobs:
       - name: Set up PostgreSQL
         run: |
           sudo systemctl start postgresql.service
-          sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD 'root';""
-          sudo -u postgres psql -c  "CREATE DATABASE health_check_db;""
+          sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD 'root';"
+          sudo -u postgres psql -c  "CREATE DATABASE health_check_db;"
 
       - name: Run integration tests
         run: npm test
