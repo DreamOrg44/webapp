@@ -8,7 +8,7 @@ on:
 jobs:
   integration-tests:
     runs-on: ubuntu-latest
-
+    steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
@@ -22,11 +22,9 @@ jobs:
 
       - name: Set up PostgreSQL
         run: |
-          sudo systemctl start postgresql.service
-          sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD ${{ secrets.DB_PASSWORD }};"
-          sudo -u postgres createdb health_check_db
-          echo "Waiting for PostgreSQL to start..."
-          sleep 10
+          sudo service postgresql start
+          sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD 'root';"
+          sudo -u postgres psql -c "CREATE DATABASE health_check_db;"
 
       - name: Run integration tests
         run: npm test
