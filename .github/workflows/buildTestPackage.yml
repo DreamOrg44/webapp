@@ -22,7 +22,10 @@ jobs:
         run: npm install
 
       - name: Run integration tests
-        uses: ./integration-tests.yml # Reference the integration-tests job
+        run: |
+          npm ci
+          npm test
+        working-directory: ./integration-tests.yml
 
       - name: Build and Package
         run: npm run build
