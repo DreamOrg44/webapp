@@ -9,7 +9,7 @@ Before you start, ensure that you have the following tools and dependencies inst
 - Git (https://git-scm.com/) - Version control system - git version 2.39.3 (Apple Git-145)
 - Database System - postgres (PostgreSQL) 14.10 (Homebrew)
 
-### Getting Started
+#### Getting Started
 
 1. **Clone the Repository:**
    ```bash
