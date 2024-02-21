@@ -20,8 +20,8 @@ sudo apt-get install -y \
 
   npm install jest@^29.7.0 supertest@^6.3.4 --save-dev
 # Step 3: Copy application artifacts and configuration files
-sudo cp -r /path/to/your/application/* /destination/path/
-sudo chown -R csye6225:csye6225 /destination/path/*
+sudo cp -r $GITHUB_WORKSPACE/my-app.zip /opt/
+sudo chown -R csye6225:csye6225 /opt/
 
 # Step 4: Add systemd service file
 sudo cp ./systemd-file.service /etc/systemd/system/
