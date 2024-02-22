@@ -1,7 +1,7 @@
 build {
   sources = ["source.googlecompute.centos"]
 
-provisioner "file" {
+  provisioner "file" {
     source      = "../webapp.zip"
     destination = "/tmp/"
   }
@@ -15,7 +15,7 @@ provisioner "file" {
       "./scripts/setupDependencies.sh",
       "./scripts/setApplicationconf.sh",
       "./scripts/systemd-file.sh"
-          ]
+    ]
   }
-  
+
 }
