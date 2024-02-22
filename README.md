@@ -66,3 +66,5 @@ Packer folder created.
 2) packer build .
 
 cd /etc/ and passwd file to see if the user is created.
+
+Update project id to dev one which is created for assignment 4
