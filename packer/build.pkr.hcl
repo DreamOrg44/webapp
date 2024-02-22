@@ -11,10 +11,10 @@ build {
   }
   provisioner "shell" {
     scripts = [
-      "./scripts/createUser.sh",
-      "./scripts/setupDependencies.sh",
-      "./scripts/setApplicationconf.sh",
-      "./scripts/systemd-file.sh"
+      "./packer/scripts/create-user.sh",
+      "./packer/scripts/setup-dependencies.sh",
+      "./packer/scripts/set-application-conf.sh",
+      "./packer/scripts/systemd-file.sh"
     ]
   }
 
