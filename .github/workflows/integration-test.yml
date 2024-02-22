@@ -36,39 +36,39 @@ jobs:
           DB_NAME: ${{ secrets.DB_NAME }}
           DB_DIALECT: ${{ secrets.DB_DIALECT }}
 
-  packer-format:
-    name: Packer Format
-    runs-on: ubuntu-latest
+  # packer-format:
+  #   name: Packer Format
+  #   runs-on: ubuntu-latest
 
-    steps:
-      - name: Check out the repository
-        uses: actions/checkout@v2
+  #   steps:
+  #     - name: Check out the repository
+  #       uses: actions/checkout@v2
 
-      - name: Set up Packer
-        uses: hashicorp/setup-packer@v1
-        with:
-          packer_version: 1.7.3
+  #     - name: Set up Packer
+  #       uses: hashicorp/setup-packer@v1
+  #       with:
+  #         packer_version: 1.7.3
 
-      - name: Set up GCP Service Account
-        uses: google-github-actions/auth@v2
-        id: auth
-        with:
-          credentials_json: '${{ secrets.GCP_SA_KEY }}'
+  #     - name: Set up GCP Service Account
+  #       uses: google-github-actions/auth@v2
+  #       id: auth
+  #       with:
+  #         credentials_json: '${{ secrets.GCP_SA_KEY }}'
 
-      - name: Cloud SDK
-        uses: google-github-actions/setup-gcloud@v2
+  #     - name: Cloud SDK
+  #       uses: google-github-actions/setup-gcloud@v2
 
-      - name: gcloud CLI
-        run: gcloud info    
+  #     - name: gcloud CLI
+  #       run: gcloud info    
 
-      - name: Zip Project
-        run: zip -r webapp.zip .
+  #     - name: Zip Project
+  #       run: zip -r webapp.zip .
 
-      - name: Verify zip
-        run: ls -l
+  #     - name: Verify zip
+  #       run: ls -l
 
-      - name: Format Packer template
-        run: packer fmt ./packer/.
+  #     - name: Format Packer template
+  #       run: packer fmt ./packer/.
 
-      - name: Validate Packer template
-        run: packer validate ./packer/.
+  #     - name: Validate Packer template
+  #       run: packer validate ./packer/.
