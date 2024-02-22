@@ -60,3 +60,9 @@ Assignment 4:
 
 1) first created a service account and granted the roles as needed and given in assignment description.
 2) 
+
+Packer folder created.
+1) packer init .
+2) packer build .
+
+cd /etc/ and passwd file to see if the user is created.
