@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 const app = require('./src/app');
 const sequelize = require('./src/config/sequelize');
 const PORT = 3000;

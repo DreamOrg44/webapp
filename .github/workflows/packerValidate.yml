@@ -1,0 +1,44 @@
+name: Packer Validation job
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  packer-format:
+    name: Packer Format
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v2
+
+      - name: Set up Packer
+        uses: hashicorp/setup-packer@main
+        with:
+          version: 1.7.3
+
+      - name: Set up GCP Service Account
+        uses: google-github-actions/auth@v2
+        id: auth
+        with:
+          credentials_json: "${{ secrets.GCP_SA_KEY }}"
+
+      - name: Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: gcloud CLI
+        run: gcloud info
+
+      - name: Zip Project
+        run: zip -r webapp.zip .
+
+      - name: Packer init
+        run: packer init ./packer/.
+
+      - name: Format Packer template
+        run: packer fmt -check ./packer/.
+
+      - name: Validate Packer template
+        run: packer validate -var 'project_id=${{secrets.GCP_PROJECT_ID}}' -var 'zone=${{secrets.GCP_ZONE}}' ./packer/.
