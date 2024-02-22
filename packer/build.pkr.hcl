@@ -2,11 +2,11 @@ build {
   sources = ["source.googlecompute.centos"]
 
   provisioner "file" {
-    source      = "../webapp.zip"
+    source      = "./webapp.zip"
     destination = "/tmp/"
   }
   provisioner "file" {
-    source      = "../webapp.service"
+    source      = "./webapp.service"
     destination = "/tmp/"
   }
   provisioner "shell" {
