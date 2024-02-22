@@ -6,7 +6,7 @@ on:
       - closed
 
 jobs:
-  build:
+  packer-build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
