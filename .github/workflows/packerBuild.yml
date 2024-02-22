@@ -1,9 +1,9 @@
 name: Packer Image Builder for GCP
 
 on:
-  push:
-    branches:
-      - main
+  pull_request:
+    types:
+      - closed
 
 jobs:
   build:
@@ -36,4 +36,4 @@ jobs:
         run: packer init ./packer/.
 
       - name: Build Packer Image
-        run: packer build -var 'project_id=${{secrets.PROJECT_ID}}' -var 'zone=${{secrets.ZONE}}' ./packer/.
+        run: packer build -var 'project_id=${{secrets.GCP_PROJECT_ID}}' -var 'zone=${{secrets.GCP_ZONE}}' ./packer/.
