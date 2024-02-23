@@ -68,3 +68,4 @@ Packer folder created.
 cd /etc/ and passwd file to see if the user is created.
 
 Update project id to dev one which is created for assignment 4.
+destroy terraform everytime there is an update in the web application so that new image will be created and referred so.
