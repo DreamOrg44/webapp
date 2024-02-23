@@ -42,7 +42,7 @@ DB_HOST="localhost"
 DB_NAME="health_check_db"
 DB_DIALECT="postgres"
 DB_USER="rushikesh"
-DB_PASSWORD="1333189"
+DB_PASSWORD="root"
 EOL
 pwd
 ls -la
