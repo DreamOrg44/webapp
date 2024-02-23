@@ -41,7 +41,7 @@ PORT=5432
 DB_HOST="localhost"
 DB_NAME="health_check_db"
 DB_DIALECT="postgres"
-DB_USER="rushikesh"
+DB_USER="postgres"
 DB_PASSWORD="root"
 EOL
 pwd
