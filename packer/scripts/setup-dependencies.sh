@@ -21,6 +21,8 @@ echo 'Setting up PostgreSQL secure installation...'
 # Change the password for the postgres user
 #echo "ALTER USER postgres WITH PASSWORD 'root';" | sudo -u postgres psql
 sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD 'root';"
+sudo -u postgres psql -c "CREATE DATABASE health_check_db;"
+
 
 echo "PostgreSQL setup completed successfully, and the installed version is $(postgres --version)"
 
