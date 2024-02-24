@@ -6,7 +6,7 @@ build {
     destination = "/tmp/"
   }
   provisioner "file" {
-    source      = "./webapp.service"
+   #source      = "./webapp.service"
     destination = "/tmp/"
   }
   provisioner "shell" {
