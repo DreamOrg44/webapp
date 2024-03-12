@@ -71,3 +71,5 @@ Changing the db conf locally for raising a PR.
 
 Update project id to dev one which is created for assignment 4.
 destroy terraform everytime there is an update in the web application so that new image will be created and referred from it.
+
+Trying to build an image by merhing the changes.
