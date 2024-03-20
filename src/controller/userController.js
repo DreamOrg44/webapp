@@ -3,6 +3,7 @@
 const User = require('../models/userModel');
 const { getCurrentDate } = require('../utils/dateUtils'); // Adjust the path
 const bcrypt = require('bcrypt');
+const logger = require('../utils/logger');
 
 
 async function createUser(req, res) {
