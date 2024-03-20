@@ -14,7 +14,8 @@ build {
       "./packer/scripts/create-user.sh",
       "./packer/scripts/setup-dependencies.sh",
       "./packer/scripts/set-application-conf.sh",
-      "./packer/scripts/systemd-file.sh"
+      "./packer/scripts/systemd-file.sh",
+      "./packer/scripts/install_ops_agent.sh"
     ]
   }
 
