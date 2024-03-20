@@ -4,14 +4,17 @@ const healthCheckRoutes = require('./routes/healthCheckRoutes');
 const userRoutes = require('./routes/userRoutes');
 const CustomError = require('./utils/errorHandler');
 const sequelize = require('./config/sequelize');
+const logger = require('./utils/logger');
 
 const app = express();
 const bootstrapDatabase = async () => {
     try {
         await sequelize.sync({ alter: true });
         console.log("database synchronization completed successfully");
+        logger.info('database synchronization completed successfully');
     } catch (error) {
         console.error("database synchronization failed", error);
+        logger.error('database synchronization failed", error');
     }
 }
 app.use(bodyParser.json());
@@ -23,6 +26,7 @@ app.use(userRoutes);
 app.use((err, req, res, next) => {
     console.error('Arrived in global error handler:', err);
     console.error('err instanceof CustomError', err instanceof CustomError);
+    logger.error('err instanceof CustomError', err instanceof CustomError);
 
 
     if (err instanceof CustomError) {
