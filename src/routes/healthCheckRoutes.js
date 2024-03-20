@@ -8,7 +8,7 @@ const sequelize = require('../config/sequelize');
 // const sequelize = new Sequelize(dbConfig.database);
 // const HealthCheck = statusCheck(sequelize, DataTypes);
 const healthCheckController = require('../controller/healthCheckController');
-const logger = require('./utils/logger');
+const logger = require('../utils/logger');
 
 router.use('/healthz', healthCheckController.performHealthCheck);
 
