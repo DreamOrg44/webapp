@@ -8,6 +8,7 @@ const sequelize = require('../config/sequelize');
 // const sequelize = new Sequelize(dbConfig.database);
 // const HealthCheck = statusCheck(sequelize, DataTypes);
 const healthCheckController = require('../controller/healthCheckController');
+const logger = require('./utils/logger');
 
 router.use('/healthz', healthCheckController.performHealthCheck);
 
@@ -16,10 +17,12 @@ router.get('/healthz', async (req, res) => {
 
   try {
     await sequelize.authenticate();
+    logger.debug('Sequelize request in process');
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
     res.status(200).send();
   } catch (error) {
     console.error('Unexpected error:', error);
+    logger.error('Unexpected error:', error);
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
     res.status(503).send();
   }
