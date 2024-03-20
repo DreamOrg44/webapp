@@ -1,5 +1,5 @@
 // controllers/HealthCheckController.js
-const logger = require('./utils/logger');
+const logger = require('../utils/logger');
 
 async function performHealthCheck(req, res, next) {
 
