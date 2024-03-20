@@ -1,17 +1,14 @@
-const { createLogger, format } = require('winston');
-const { LoggingWinston } = require('@google-cloud/logging-winston');
+const winston = require("winston");
 
-// Create a Winston logger instance
-const logger = createLogger({
-  level: 'info',
-  format: format.combine(
-    format.timestamp(),
-    format.json() // Use JSON format for logs
-  ),
-  transports: [
-    new LoggingWinston({
-      projectId: 'csye6225-ns-cloud-dev',
-    }),
+const logger = winston.createLogger({
+  level: "info",
+  format: winston.format.combine(
+    winston.format.timestamp(), // Include timestamp
+    winston.format.json() // Use JSON format for logs
+  ),  transports: [
+    new winston.transports.Console(),
+    new winston.transports.File({ filename: "/var/log/csye6225/webapp.log" }),
+    //new winston.transports.File({ filename: "./webapp.log" }),
   ],
 });
 
