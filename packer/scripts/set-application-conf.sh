@@ -29,6 +29,9 @@ sudo chmod +x "$INSTALL_DIR/index.js"
 
 echo "Reached line 30"
 
+sudo mkdir -p /var/log/csye6225
+sudo chown csye6225:csye6225 /var/log/csye6225
+
 # Install npm dependencies
 cd "$APP_DIR"
 sudo npm install
