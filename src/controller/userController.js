@@ -18,8 +18,8 @@ async function createUser(req, res) {
     res.status(201).json({ id: newUser.id, email: newUser.email, firstName, lastName, account_created: newUser.account_created, account_updated: newUser.account_updated });
   } catch (error) {
     if (error.name === 'SequelizeUniqueConstraintError') {
-      res.status(400).json({ error: 'User with this email already exists' });
       logger.error(error, 'User with this email already exists');
+      res.status(400).json({ error: 'User with this email already exists' });
     } else {
       console.error('Error creating user:', error);
       res.status(500).send('Internal Server Error');
