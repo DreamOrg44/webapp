@@ -26,6 +26,12 @@ jobs:
           sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD 'root';"
           sudo -u postgres psql -c "CREATE DATABASE health_check_db;"
 
+        - name: give permission to create log file
+         run: |
+          sudo mkdir -p /var/log/csye6225
+          sudo touch /var/log/csye6225/webapp.log
+          sudo chmod 766 /var/log/csye6225/webapp.log
+
       - name: Run integration tests
         run: npm test
         env:
