@@ -14,6 +14,7 @@ router.use('/healthz', healthCheckController.performHealthCheck);
 
 router.get('/healthz', async (req, res) => {
     console.log("Reached in routes after performing health check");
+    logger.info('Reached in routes after performing health check');
 
   try {
     await sequelize.authenticate();

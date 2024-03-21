@@ -11,6 +11,7 @@ async function createUser(req, res) {
     const { email, password, firstName, lastName } = req.body;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
+      logger.warn('Invalid email format entered');
       return res.status(400).json({ error: 'Invalid email format, kindly follow email based username.' });
     }
     const newUser = await User.create({ email, password, firstName, lastName, account_created: getCurrentDate(), });
@@ -18,6 +19,7 @@ async function createUser(req, res) {
   } catch (error) {
     if (error.name === 'SequelizeUniqueConstraintError') {
       res.status(400).json({ error: 'User with this email already exists' });
+      logger.error(error, 'User with this email already exists');
     } else {
       console.error('Error creating user:', error);
       res.status(500).send('Internal Server Error');
@@ -28,6 +30,7 @@ async function updateUser(req, res) {
   try {
     const { firstName, lastName, password } = req.body;
     if ('account_created' in req.body || 'account_updated' in req.body || 'email' in req.body) {
+      logger.warn('Invalid fields provided for updating the data');
       return res.status(400).json({ error: 'Invalid fields provided for update' });
     }
 
@@ -51,6 +54,7 @@ async function updateUser(req, res) {
     }
   } catch (error) {
     console.error('Error updating user:', error);
+    logger.error('Error updating user:', error);
     res.status(500).send('Internal Server Error');
   }
 }
@@ -59,12 +63,15 @@ async function getUserInfo(req, res) {
   try {
     const user = await User.findByPk(req.user.id, { attributes: { exclude: ['password'] } });
     if (user) {
+      logger.info('User has been found in the system');
       res.status(200).json(user);
     } else {
+      logger.error('User has not been found in the system');
       res.status(404).json({ error: 'User not found' });
     }
   } catch (error) {
     console.error('Error retrieving user information:', error);
+    logger.error('Error retrieving user information:', error);
     res.status(500).send('Internal Server Error');
   }
 }
