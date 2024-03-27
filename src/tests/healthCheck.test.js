@@ -77,6 +77,7 @@ describe('Health Check API', () => {
 
         expect(response.status).toBe(201);
         expect(response.body).toHaveProperty('id');
+        expect(pubMessage).not.toHaveBeenCalled();
     });
 
     // Test Case 2: Get User Details
