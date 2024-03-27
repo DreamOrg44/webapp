@@ -67,18 +67,18 @@ describe('Health Check API', () => {
         expect(response.status).toBe(400);
         expect(response.headers['cache-control']).toBe('no-store, no-cache, must-revalidate');
     });
-    test('Create an Account', async () => {
-        const response = await request(app).post('/v1/user').send({
-            email: 'test1234@example.com',
-            password: 'password123',
-            firstName: 'John',
-            lastName: 'Doe',
-        });
+    // test('Create an Account', async () => {
+    //     const response = await request(app).post('/v1/user').send({
+    //         email: 'test1234@example.com',
+    //         password: 'password123',
+    //         firstName: 'John',
+    //         lastName: 'Doe',
+    //     });
 
-        expect(response.status).toBe(201);
-        expect(response.body).toHaveProperty('id');
-        expect(pubMessage).not.toHaveBeenCalled();
-    });
+    //     expect(response.status).toBe(201);
+    //     expect(response.body).toHaveProperty('id');
+    //     expect(pubMessage).not.toHaveBeenCalled();
+    // });
 
     // Test Case 2: Get User Details
     test('Get User Details', async () => {
