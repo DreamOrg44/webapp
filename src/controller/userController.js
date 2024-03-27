@@ -1,11 +1,13 @@
 // controllers/UserController.js
 
 const User = require('../models/userModel');
-const EmailTracking=require('../models/emailTracking')
+const EmailTracking = require('../models/emailTracking')
 const { getCurrentDate } = require('../utils/dateUtils'); // Adjust the path
 const bcrypt = require('bcrypt');
 const logger = require('../utils/logger');
 const { pubMessage } = require('../utils/pubSub');
+
+const isGitHubActions = process.env.GITHUB_ACTIONS === 'true';
 
 
 async function createUser(req, res) {
@@ -17,7 +19,10 @@ async function createUser(req, res) {
       return res.status(400).json({ error: 'Invalid email format, kindly follow email based username.' });
     }
     const newUser = await User.create({ email, password, firstName, lastName, account_created: getCurrentDate(), });
-    pubMessage('verify_email',newUser);
+    if (!isGitHubActions) {
+      pubMessage('verify_email', newUser);
+    }
+
     // await pubSubClient.topic('verify_email').publishJSON({ userId: newUser.id, email: newUser.email });
 
     res.status(201).json({ id: newUser.id, email: newUser.email, firstName, lastName, account_created: newUser.account_created, account_updated: newUser.account_updated });
