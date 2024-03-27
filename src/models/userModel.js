@@ -33,6 +33,11 @@ const User = sequelize.define('User', {
   account_updated: {
     type: DataTypes.DATE,
   },
+  email_verified: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: false
+  },
 }, {
   timestamps: false,
 });
@@ -44,3 +49,5 @@ User.beforeCreate(async (user) => {
   user.password = hashedPassword;
 });
 module.exports = User;
+
+

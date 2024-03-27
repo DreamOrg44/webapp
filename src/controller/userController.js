@@ -1,9 +1,11 @@
 // controllers/UserController.js
 
 const User = require('../models/userModel');
+const EmailTracking=require('../models/emailTracking')
 const { getCurrentDate } = require('../utils/dateUtils'); // Adjust the path
 const bcrypt = require('bcrypt');
 const logger = require('../utils/logger');
+const { pubMessage } = require('../utils/pubSub');
 
 
 async function createUser(req, res) {
@@ -15,6 +17,9 @@ async function createUser(req, res) {
       return res.status(400).json({ error: 'Invalid email format, kindly follow email based username.' });
     }
     const newUser = await User.create({ email, password, firstName, lastName, account_created: getCurrentDate(), });
+    pubMessage('verify_email',newUser);
+    // await pubSubClient.topic('verify_email').publishJSON({ userId: newUser.id, email: newUser.email });
+
     res.status(201).json({ id: newUser.id, email: newUser.email, firstName, lastName, account_created: newUser.account_created, account_updated: newUser.account_updated });
   } catch (error) {
     if (error.name === 'SequelizeUniqueConstraintError') {
@@ -42,7 +47,7 @@ async function updateUser(req, res) {
     }
 
     const updatedUser = await User.update(updateFields,
-      { where: { id: req.user.id } } 
+      { where: { id: req.user.id } }
     );
 
     if (updatedUser[0] === 1) {
@@ -75,10 +80,26 @@ async function getUserInfo(req, res) {
     res.status(500).send('Internal Server Error');
   }
 }
+async function updateUserEmailVerification(token) {
+  try {
+    const user = await EmailTracking.findOne({ where: { verificationToken: token, userId: userId } });
+    if (user) {
+      await User.update({ email_verified: true }, { where: { verificationToken: token } });
+      return user;
+    } else {
+      return null;
+    }
+  } catch (error) {
+    console.error('Error updating user:', error);
+    throw error;
+  }
+}
+
 
 module.exports = {
   createUser,
   updateUser,
   getUserInfo,
+  updateUserEmailVerification,
 };
 
