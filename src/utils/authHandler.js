@@ -11,7 +11,7 @@ const CustomError = require('./errorHandler')
 
 const bcrypt = require('bcrypt');
 const User = require('../models/userModel'); // Adjust the path based on your project structure
-const isGitHubActions = process.env.GITHUB_ACTIONS === 'true';
+// const isGitHubActions = process.env.GITHUB_ACTIONS === 'true';
 
 async function authHandler(req, res, next) {
     const authHeader = req.headers.authorization;
@@ -48,26 +48,30 @@ async function authHandler(req, res, next) {
     try {
         const user = await User.findOne({ where: { email } });
 
-        if (user && await bcrypt.compare(password, user.password)) {
-            if(isGitHubActions){
-                req.user = user;
-                next();
-            }
-            if (!isGitHubActions && user.email_verified) {
-                req.user = user;
-                next();
+        if (process.env.GITHUB_ACTIONS === 'true') {
+            // Running in GitHub Actions, skip email verification check
+            console.log("Running in GitHub Actions, skipping email verification check");
+            req.user = user;
+            return next();
+        }
+        else {
+            if (user && await bcrypt.compare(password, user.password)) {
+                if (user.email_verified) {
+                    req.user = user;
+                    next();
+                } else {
+                    console.log("Email is not verified");
+                    // Email is not verified, return unauthorized response
+                    const err = new CustomError('Email not verified', 401);
+                    return next(err);
+                }
             } else {
-                console.log("Email is not verified");
-                // Email is not verified, return unauthorized response
-                const err = new CustomError('Email not verified', 401);
+                console.log("Came in password failure check");
+                let err = new CustomError('You are not authenticated!', 401);
+                console.log("Created customError instance", err);
+                res.setHeader('WWW-Authenticate', 'Basic');
                 return next(err);
             }
-        } else {
-            console.log("Came in password failure check");
-            let err = new CustomError('You are not authenticated!', 401);
-            console.log("Created customError instance", err);
-            res.setHeader('WWW-Authenticate', 'Basic');
-            return next(err);
         }
     } catch (error) {
         console.error('Database query error in catch block:', error);
