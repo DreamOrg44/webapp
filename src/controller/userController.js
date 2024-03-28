@@ -85,9 +85,10 @@ async function getUserInfo(req, res) {
     res.status(500).send('Internal Server Error');
   }
 }
-async function updateUserEmailVerification(token) {
+async function updateUserEmailVerification(token,userId) {
   try {
-    const user = await EmailTracking.findOne({ where: { verificationToken: token, userId: userId } });
+    console.log("Inside updateUserEmailVerification", token, "and ", userId);
+    const user = await EmailTracking.findOne({ where: { verificationToken: token, id: userId } });
     if (user) {
       await User.update({ email_verified: true }, { where: { verificationToken: token } });
       return user;
