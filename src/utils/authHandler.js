@@ -49,8 +49,15 @@ async function authHandler(req, res, next) {
         const user = await User.findOne({ where: { email } });
 
         if (user && await bcrypt.compare(password, user.password)) {
-            req.user = user;
-            next();
+            if (user.email_verified) {
+                req.user = user;
+                next();
+            } else {
+                console.log("Email is not verified");
+                // Email is not verified, return unauthorized response
+                const err = new CustomError('Email not verified', 401);
+                return next(err);
+            }
         } else {
             console.log("Came in password failure check");
             let err = new CustomError('You are not authenticated!', 401);
