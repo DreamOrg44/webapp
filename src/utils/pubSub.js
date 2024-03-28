@@ -19,4 +19,6 @@ const pubMessage = async (topicName, data) => {
     }
 };
 
-module.exports = pubMessage;
+module.exports = {
+    pubMessage,
+}
