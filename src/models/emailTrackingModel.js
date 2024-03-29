@@ -2,10 +2,10 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../config/sequelize'); // Your Sequelize instance
 
 const EmailTracking = sequelize.define('email_tracking', {
-  userId: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-  },
+  // userId: {
+  //   type: DataTypes.INTEGER,
+  //   allowNull: false,
+  // },
   email: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -14,7 +14,7 @@ const EmailTracking = sequelize.define('email_tracking', {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  token: {
+  verificationToken: {
     type: DataTypes.STRING, // Assuming your token is a string
     allowNull: false,
     unique: true, // If tokens should be unique

@@ -1,4 +1,4 @@
-project_id  = "csye6225-ns-cloud-dev"
+project_id  = "csye-6225-ns-cloud-dev"
 zone        = "us-east1-b"
 region      = "us-east1"
 vpc_name    = "mainvpc"
