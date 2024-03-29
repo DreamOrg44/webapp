@@ -1,7 +1,7 @@
 // controllers/UserController.js
 
 const User = require('../models/userModel');
-const EmailTracking = require('../models/emailTracking')
+const EmailTracking = require('../models/emailTrackingModel')
 const { getCurrentDate } = require('../utils/dateUtils'); // Adjust the path
 const bcrypt = require('bcrypt');
 const logger = require('../utils/logger');
@@ -85,16 +85,25 @@ async function getUserInfo(req, res) {
     res.status(500).send('Internal Server Error');
   }
 }
-async function updateUserEmailVerification(token,userId) {
+async function updateUserEmailVerification(req, res) {
   try {
+    const token = req.query.token;
+    const userId = req.query.userId;
     console.log("Inside updateUserEmailVerification", token, "and ", userId);
-    const user = await EmailTracking.findOne({ where: { verificationToken: token, id: userId } });
-    if (user) {
-      await User.update({ email_verified: true }, { where: { verificationToken: token } });
-      return user;
-    } else {
-      return null;
+    if (!token || !userId) {
+      console.log("User id and token are not provided in request");
+      return res.status(400).json({ error: 'Token and userId are required' });
     }
+    const user = await EmailTracking.findOne({ where: { verificationToken: token, id: userId } });
+    if (!user) {
+      console.log("No user found for verification with token:", token, "and userId:", userId);
+      return res.status(404).json({ error: 'User not found for verification' });
+    }
+
+    console.log("User found for verification inside updateUserEmailVerification ", user);
+    await User.update({ email_verified: true }, { where: { verificationToken: token } });
+    return res.status(200).json({ message: 'User email verified successfully' });
+
   } catch (error) {
     console.error('Error updating user:', error);
     throw error;
