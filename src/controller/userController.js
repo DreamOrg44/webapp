@@ -89,22 +89,47 @@ async function updateUserEmailVerification(req, res) {
   try {
     const token = req.query.token;
     const userId = req.query.userId;
+    logger.info("Inside updateUserEmailVerification", token, "and ", userId);
     console.log("Inside updateUserEmailVerification", token, "and ", userId);
     if (!token || !userId) {
+      logger.info("User id and token are not provided in request");
       console.log("User id and token are not provided in request");
       return res.status(400).json({ error: 'Token and userId are required' });
     }
+
+    const timestamp = req.query.timestamp;
+    if (!timestamp) {
+      logger.warn('Timestamp not provided in request');
+      console.log("Timestamp not provided in request");
+      return res.status(400).json({ error: 'Timestamp is required' });
+    }
+
+    const timestampMs = parseInt(timestamp, 10);
+
+    const currentTimeMs = Date.now();
+
+    const differenceMinutes = (currentTimeMs - timestampMs) / (1000 * 60);
+
+    const expirationLimitMinutes = 2;
+    if (differenceMinutes > expirationLimitMinutes) {
+      logger.error('Verification link has expired');
+      console.log("Verification link has expired");
+      return res.status(403).json({ error: 'Verification link has expired' });
+    }
+
     const user = await EmailTracking.findOne({ where: { verificationToken: token, id: userId } });
     if (!user) {
+      logger.error("No user found for verification with token:", token, "and userId:", userId);
       console.log("No user found for verification with token:", token, "and userId:", userId);
       return res.status(404).json({ error: 'User not found for verification' });
     }
-
+    logger.info("User found for verification inside updateUserEmailVerification ", user);
     console.log("User found for verification inside updateUserEmailVerification ", user);
     await User.update({ email_verified: true }, { where: { verificationToken: token } });
     return res.status(200).json({ message: 'User email verified successfully' });
 
   } catch (error) {
+    logger.error('Error updating user:', error);
     console.error('Error updating user:', error);
     throw error;
   }
