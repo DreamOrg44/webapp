@@ -39,13 +39,13 @@ pwd
 echo "Reached line 36"
 ls -la
 # Create and populate .env.development
-# sudo tee .env <<EOL
-# PORT=5432
-# DB_HOST="localhost"
-# DB_NAME="health_check_db"
-# DB_DIALECT="postgres"
-# DB_USER="postgres"
-# DB_PASSWORD="root"
-# EOL
+sudo tee .env <<EOL
+PORT=5432
+DB_HOST="localhost"
+DB_NAME="health_check_db"
+DB_DIALECT="postgres"
+DB_USER="postgres"
+DB_PASSWORD="root"
+EOL
 pwd
 ls -la
