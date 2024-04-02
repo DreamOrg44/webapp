@@ -1,11 +1,15 @@
-const { DataTypes } = require('sequelize');
+const { DataTypes,Sequelize } = require('sequelize');
 const sequelize = require('../config/sequelize'); // Your Sequelize instance
 
 const EmailTracking = sequelize.define('email_tracking', {
-  // userId: {
-  //   type: DataTypes.INTEGER,
-  //   allowNull: false,
-  // },
+  userId: {
+    type: DataTypes.UUID,
+    allowNull: false,
+    references: {
+      model: "Users",
+      key: "id",
+    },
+  },
   email: {
     type: DataTypes.STRING,
     allowNull: false,
