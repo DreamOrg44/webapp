@@ -6,6 +6,8 @@ const { getCurrentDate } = require('../utils/dateUtils'); // Adjust the path
 const bcrypt = require('bcrypt');
 const logger = require('../utils/logger');
 const { pubMessage } = require('../utils/pubSub');
+const { config } = require('dotenv');
+const { TOKEN_EXPIRY_TIME } = require('../utils/configFile');
 
 const isGitHubActions = process.env.GITHUB_ACTIONS === 'true';
 
@@ -128,7 +130,7 @@ async function updateUserEmailVerification(req, res) {
       if (
         tokenData.token !== token ||
         Date.now() - tokenData.createdAt.getTime() >
-        1, 200, 000
+        TOKEN_EXPIRY_TIME
       ) {
         return null;
       }
