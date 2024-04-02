@@ -97,36 +97,48 @@ async function updateUserEmailVerification(req, res) {
       return res.status(400).json({ error: 'Token and userId are required' });
     }
 
-    const timestamp = req.query.timestamp;
-    if (!timestamp) {
-      logger.warn('Timestamp not provided in request');
-      console.log("Timestamp not provided in request");
-      return res.status(400).json({ error: 'Timestamp is required' });
-    }
+    // const timestamp = req.query.timestamp;
+    // if (!timestamp) {
+    //   logger.warn('Timestamp not provided in request');
+    //   console.log("Timestamp not provided in request");
+    //   return res.status(400).json({ error: 'Timestamp is required' });
+    // }
 
-    const timestampMs = parseInt(timestamp, 10);
+    // const timestampMs = parseInt(timestamp, 10);
 
-    const currentTimeMs = Date.now();
+    // const currentTimeMs = Date.now();
 
-    const differenceMinutes = (currentTimeMs - timestampMs) / (1000 * 60);
+    // const differenceMinutes = (currentTimeMs - timestampMs) / (1000 * 60);
 
-    const expirationLimitMinutes = 2;
-    if (differenceMinutes > expirationLimitMinutes) {
-      logger.error('Verification link has expired');
-      console.log("Verification link has expired");
-      return res.status(403).json({ error: 'Verification link has expired' });
-    }
+    // const expirationLimitMinutes = 2;
+    // if (differenceMinutes > expirationLimitMinutes) {
+    //   logger.error('Verification link has expired');
+    //   console.log("Verification link has expired");
+    //   return res.status(403).json({ error: 'Verification link has expired' });
+    // }
 
-    const user = await EmailTracking.findOne({ where: { verificationToken: token, id: userId } });
-    if (!user) {
-      logger.error("No user found for verification with token:", token, "and userId:", userId);
-      console.log("No user found for verification with token:", token, "and userId:", userId);
+
+    const tokenData = await EmailTracking.findOne({ where: { verificationToken: token } });
+    if (!tokenData) {
+      logger.error("No tokenData found for verification with token:", token, "and userId:", userId);
+      console.log("No tokenData found for verification with token:", token, "and userId:", userId);
       return res.status(404).json({ error: 'User not found for verification' });
     }
-    logger.info("User found for verification inside updateUserEmailVerification ", user);
-    console.log("User found for verification inside updateUserEmailVerification ", user);
-    await User.update({ email_verified: true }, { where: { verificationToken: token } });
-    return res.status(200).json({ message: 'User email verified successfully' });
+    else {
+      if (
+        tokenData.token !== token ||
+        Date.now() - tokenData.createdAt.getTime() >
+        1, 200, 000
+      ) {
+        return null;
+      }
+      else {
+        logger.info("User found for verification inside updateUserEmailVerification ", userId);
+        console.log("User found for verification inside updateUserEmailVerification ", userId);
+        await User.update({ email_verified: true }, { where: { id: userId } });
+        return res.status(200).json({ message: 'User email verified successfully' });
+      }
+    }
 
   } catch (error) {
     logger.error('Error updating user:', error);
