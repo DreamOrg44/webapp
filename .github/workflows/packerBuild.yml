@@ -37,3 +37,40 @@ jobs:
 
       - name: Build Packer Image
         run: packer build -var 'project_id=${{secrets.GCP_PROJECT_ID}}' -var 'zone=${{secrets.GCP_ZONE}}' ./packer/.
+
+      - name: Authenticate with gcloud CLI
+        run: | 
+          echo '${{ secrets.GCP_SA_KEY }}' > gcp-key.json
+          gcloud auth activate-service-account --key-file=gcp-key.json
+
+      - name: Generate a unique template name
+        id: vars
+        run: echo "TEMPLATE_NAME=${{ secrets.TEMPLATE_NAME }}-$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
+
+      - name: Create a new instance template
+        run: |
+          gcloud compute instance-templates create ${{ env.TEMPLATE_NAME }} \
+          --region=${{ secrets.REGION }} \
+          --machine-type=n1-standard-1 \
+          --image=${{ steps.build.outputs.image_name }}
+
+      - name: Update managed instance group to use new template
+        run: |
+          gcloud compute instance-groups managed set-instance-template ${{ secrets.INSTANCE_GROUP_NAME }} \
+          --template=${{ env.TEMPLATE_NAME }} \
+          --region=${{ secrets.REGION }}
+
+      - name: Recreate instances in the managed instance group
+        run: |
+          gcloud compute instance-groups managed rolling-action start-update ${{ secrets.INSTANCE_GROUP_NAME }} \
+          --version template=${{ env.TEMPLATE_NAME }} \
+          --region=${{ secrets.REGION }} \
+          --type=opportunistic
+
+      - name: Wait for the instance group update to complete
+        run: |
+          while : ; do
+          status=$(gcloud compute instance-groups managed describe ${{ secrets.INSTANCE_GROUP_NAME }} --region=${{ secrets.REGION }} --format='value(status.isStable)')
+          [[ "$status" == "True" ]] && break || echo "Waiting for update to complete"
+          sleep 30
+          done
