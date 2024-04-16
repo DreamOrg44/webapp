@@ -49,7 +49,7 @@ jobs:
       - name: Extract Image Name
         run: |
           cat build.log  # This will print the content of build.log to the log for debugging
-          IMAGE_NAME=$(grep -oP 'A disk image is created in the .+ project: \K.+' build.log)
+          IMAGE_NAME=$(grep -oP 'A disk image was created in the .+ project: \K.+' build.log)
           echo "Extracted IMAGE_NAME: ${IMAGE_NAME}"
           echo "IMAGE_NAME=${IMAGE_NAME}" >> $GITHUB_ENV
 
