@@ -76,7 +76,7 @@ jobs:
             --machine-type=${{ secrets.MACHINE_TYPE }} \
             --image=projects/csye-6225-ns-cloud-dev/global/images/${{env.IMAGE_NAME}} \
             --boot-disk-type=pd-standard \
-            --boot-disk-kms-key=projects/csye-6225-ns-cloud-dev/locations/us-east1/keyRings/my-key-ring-8/cryptoKeys/vm-crypto-key-8 \
+            --boot-disk-kms-key=projects/csye-6225-ns-cloud-dev/locations/us-east1/keyRings/${{env.KEY_RING}}/cryptoKeys/vm-crypto-key \
             --subnet=${{ secrets.SUBNETWORK }} \
             --service-account=${{ secrets.SERVICE_ACCOUNT_EMAIL }} \
             --scopes=https://www.googleapis.com/auth/cloud-platform \
