@@ -74,7 +74,7 @@ jobs:
           gcloud compute instance-templates create ${{ env.TEMPLATE_NAME }} \
             --region=us-east1 \
             --machine-type=${{ secrets.MACHINE_TYPE }} \
-            --image=projects/csye6225-cloud-dev-415002/global/images/${{env.IMAGE_NAME}} \
+            --image=projects/csye-6225-ns-cloud-dev/global/images/${{env.IMAGE_NAME}} \
             --boot-disk-type=pd-standard \
             --boot-disk-kms-key=projects/csye-6225-ns-cloud-dev/locations/us-east1/keyRings/my-key-ring-8/cryptoKeys/vm-crypto-key-8 \
             --subnet=${{ secrets.SUBNETWORK }} \
