@@ -70,7 +70,7 @@ describe('Health Check API', () => {
         expect(response.headers['cache-control']).toBe('no-store, no-cache, must-revalidate');
     });
     test('Create an Account', async () => {
-        const response = await request(app).post('/v1/user').send({
+        const response = await request(app).post('/v2/user').send({
             email: 'test1234@example.com',
             password: 'password123',
             firstName: 'John',
@@ -83,7 +83,7 @@ describe('Health Check API', () => {
 
     // Test Case 2: Get User Details
     test('Get User Details', async () => {
-        const response = await request(app).get('/v1/user/self')
+        const response = await request(app).get('/v2/user/self')
             .set('Authorization', `Basic ${Buffer.from(`${username}:${password}`).toString('base64')}`);
         expect(response.status).toBe(200);
         expect(response.body).toHaveProperty('email', 'test1234@example.com');
@@ -102,7 +102,7 @@ describe('Health Check API', () => {
     test('Update User Account', async () => {
         // Make a PUT request to update the user account
         const updateResponse = await request(app)
-            .put('/v1/user/self')
+            .put('/v2/user/self')
             .set('Authorization', `Basic ${Buffer.from(`${username}:${password}`).toString('base64')}`)
             .send({
                 firstName: 'UpdatedJohn',
@@ -113,7 +113,7 @@ describe('Health Check API', () => {
 
         // Make a GET request to retrieve the updated user information
         const getResponse = await request(app)
-            .get('/v1/user/self')
+            .get('/v2/user/self')
             .set('Authorization', `Basic ${Buffer.from(`${username}:${password}`).toString('base64')}`);
 
         // Check if the GET request was successful (Status Code 200)
