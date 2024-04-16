@@ -2,8 +2,12 @@ name: Packer Image Builder for GCP
 
 on:
   pull_request:
-    types:
-      - closed
+    branches:
+      - main
+# on:
+#   pull_request:
+#     types:
+#       - closed
 
 jobs:
   packer-build:
@@ -36,10 +40,15 @@ jobs:
         run: packer init ./packer/.
 
       - name: Build Packer Image
-        run: packer build -var 'project_id=${{secrets.GCP_PROJECT_ID}}' -var 'zone=${{secrets.GCP_ZONE}}' ./packer/.
+        run: packer build -var 'project_id=${{secrets.GCP_PROJECT_ID}}' -var 'zone=${{secrets.GCP_ZONE}}' ./packer/. | tee build.txt
+
+      - name: Extract Image Name
+        run: |
+          IMAGE_NAME=$(grep -oP 'A disk image is created in the .+ project: \K.+' build.txt)
+          echo "IMAGE_NAME=${IMAGE_NAME}" >> $GITHUB_ENV
 
       - name: Authenticate with gcloud CLI
-        run: | 
+        run: |
           echo '${{ secrets.GCP_SA_KEY }}' > gcp-key.json
           gcloud auth activate-service-account --key-file=gcp-key.json
 
@@ -47,30 +56,40 @@ jobs:
         id: vars
         run: echo "TEMPLATE_NAME=${{ secrets.TEMPLATE_NAME }}-$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
 
+      - name: Retrieve database password and host secrets
+        run: |
+          echo "DB_PASSWORD=$(gcloud secrets versions access latest --secret=db_password)" >> $GITHUB_ENV
+          echo "DB_HOST=$(gcloud secrets versions access latest --secret=db_host)" >> $GITHUB_ENV
+          echo "KEY_RING=$(gcloud secrets versions access latest --secret=key_ring)" >> $GITHUB_ENV
+
       - name: Create a new instance template
         run: |
-          gcloud compute instance-templates create ${{ env.TEMPLATE_NAME }} \
-          --region=${{ secrets.REGION }} \
-          --machine-type=n1-standard-1 \
-          --image=${{ steps.build.outputs.image_name }}
-
+          gcloud compute instance-templates create ${{ env.TEMPLATE_NAME }}
+            --region=us-east1 \
+            --machine-type=${{ secrets.MACHINE_TYPE }} \
+            --image=projects/csye6225-cloud-dev-415002/global/images/${{env.IMAGE_NAME}} \
+            --boot-disk-type=pd-standard \
+            --boot-disk-kms-key=projects/csye-6225-ns-cloud-dev/locations/us-east1/keyRings/my-key-ring-8/cryptoKeys/vm-crypto-key-8 \
+            --subnet=${{ secrets.SUBNETWORK }} \
+            --service-account=${{ secrets.SERVICE_ACCOUNT_EMAIL }} \
+            --scopes=https://www.googleapis.com/auth/cloud-platform \
+            --tags=${{ secrets.TAGS }} \
+           
       - name: Update managed instance group to use new template
         run: |
           gcloud compute instance-groups managed set-instance-template ${{ secrets.INSTANCE_GROUP_NAME }} \
-          --template=${{ env.TEMPLATE_NAME }} \
-          --region=${{ secrets.REGION }}
+            --template=${{ env.TEMPLATE_NAME }} \
+            --region=${{ secrets.REGION }}
 
       - name: Recreate instances in the managed instance group
         run: |
           gcloud compute instance-groups managed rolling-action start-update ${{ secrets.INSTANCE_GROUP_NAME }} \
-          --version template=${{ env.TEMPLATE_NAME }} \
-          --region=${{ secrets.REGION }} \
-          --type=opportunistic
+            --version template=${{ env.TEMPLATE_NAME }} \
+            --region=${{ secrets.REGION }} \
+            --type=${{secrets.ROLLING_TYPE}}
 
-      - name: Wait for the instance group update to complete
+      - name: Wait for Refresh
         run: |
-          while : ; do
-          status=$(gcloud compute instance-groups managed describe ${{ secrets.INSTANCE_GROUP_NAME }} --region=${{ secrets.REGION }} --format='value(status.isStable)')
-          [[ "$status" == "True" ]] && break || echo "Waiting for update to complete"
-          sleep 30
-          done
+          gcloud compute instance-groups managed wait-until ${{secrets.INSTANCE_GROUP_NAME}}  \
+            --version-target-reached \
+            --region=${{ secrets.REGION }}
